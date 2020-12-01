@@ -23,7 +23,7 @@ AProjectileTest::AProjectileTest()
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectileTest::OnHit);
-	CollisionComponent->InitSphereRadius(15.0f);
+	CollisionComponent->InitSphereRadius(7.5f);
 	RootComponent = CollisionComponent;
 		}
 
