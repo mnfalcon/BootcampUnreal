@@ -29,7 +29,7 @@ class AUnrealBootcamp3Character : public ACharacter
 	UPROPERTY(EditAnywhere/*, BlueprintReadOnly, Category = Camera , meta = (AllowPrivateAcess = "true")*/)
 		class USpringArmComponent* CameraFace;
 	UPROPERTY(EditAnywhere/*, BlueprintReadOnly, Category = Camera , meta = (AllowPrivateAcess = "true")*/)
-		class UCameraComponent* TPCamera;
+		class UCameraComponent* FPCamera;
 
 
 
@@ -52,6 +52,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class AThrowableTest* CurrentItem;
+
+	bool isFPCameraActive;
 
 protected:
 
@@ -119,7 +121,7 @@ public:
 
 	FORCEINLINE class USpringArmComponent* GetCameraFace() const { return CameraFace; }
 	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetTPCamera() const { return TPCamera; }
+	FORCEINLINE class UCameraComponent* GetTPCamera() const { return FPCamera; }
 
 	UFUNCTION()
 	void Fire();

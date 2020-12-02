@@ -54,19 +54,20 @@ AUnrealBootcamp3Character::AUnrealBootcamp3Character()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
-	//Creating a third person camera
+	//Creating a first person camera
 	CameraFace = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraFace"));
 	CameraFace->SetupAttachment(AUnrealBootcamp3Character::GetMesh(), FName(TEXT("head")));
 	CameraFace->TargetArmLength = 0.0f; // The camera follows at this distance behind the character	
 	CameraFace->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	TPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("TPCamera"));
-	TPCamera->SetupAttachment(CameraFace, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	TPCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	TPCamera->bAutoActivate = false;
+	FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPCamera"));
+	FPCamera->SetupAttachment(CameraFace, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FPCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FPCamera->bAutoActivate = false;
 
 
 
 	ProjectileCount = 0;
+	isFPCameraActive = false;
 }
 
 void AUnrealBootcamp3Character::AddToInventory(APickupTest* actor)
@@ -152,14 +153,16 @@ void AUnrealBootcamp3Character::CameraSwitch()
 	if (FollowCamera->IsActive())
 	{
 		FollowCamera->SetActive(false);
-		TPCamera->SetActive(true);
+		FPCamera->SetActive(true);
 		this->bUseControllerRotationYaw = true;
+		isFPCameraActive = true;
 	}
-	else if(TPCamera->IsActive())
+	else if(FPCamera->IsActive())
 	{
-		TPCamera->SetActive(false);
+		FPCamera->SetActive(false);
 		FollowCamera->SetActive(true);
 		this->bUseControllerRotationYaw = false;
+		isFPCameraActive = false;
 	}
 }
 void AUnrealBootcamp3Character::OnResetVR()
@@ -262,7 +265,10 @@ void AUnrealBootcamp3Character::Fire()
 					FVector LaunchDirection = MuzzleRotation.Vector();
 					Projectile->FireInDirection(LaunchDirection);
 					ProjectileCount -= 1;
-					AUnrealBootcamp3Character::_inventory.Pop();
+					if (_inventory.Num() > 0)
+					{
+						AUnrealBootcamp3Character::_inventory.Pop();
+					}
 				}
 			}
 		}
