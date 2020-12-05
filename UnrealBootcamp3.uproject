@@ -13,6 +13,13 @@
 			]
 		}
 	],
+	"Plugins": [
+		{
+			"Name": "MantlingSystem",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/b4f52bfbc42745aa9329f5d2824fb3c2"
+		}
+	],
 	"TargetPlatforms": [
 		"WindowsNoEditor",
 		"AllDesktop",
