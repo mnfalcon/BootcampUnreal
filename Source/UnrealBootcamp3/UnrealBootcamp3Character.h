@@ -38,6 +38,10 @@ class AUnrealBootcamp3Character : public ACharacter
 
 	UPROPERTY(EditAnywhere)
 		class USceneComponent* HoldingComponent;
+
+	UPROPERTY(VisibleAnywhere)
+		float SprintSpeedMultiplier;
+
 public:
 	AUnrealBootcamp3Character();
 
@@ -88,6 +92,8 @@ protected:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	void Sprint();
+	void StopSprinting();
 
 private:
 	TArray<APickupTest*> _inventory;
@@ -128,6 +134,15 @@ public:
 
 	void CameraSwitch();
 
+	UFUNCTION()
+		void DepleteStamina();
+
+	UFUNCTION()
+		void RegenerateStamina();
+	
+
+	FTimerHandle SprintTimer;
+
 	//Offset from the camera location to fire projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector MuzzleOffset;
@@ -138,6 +153,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 ProjectileCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float PlayerStamina;
+
+	bool bIsSprinting;
+
+	float sprintRate;
+
+
 
 
 

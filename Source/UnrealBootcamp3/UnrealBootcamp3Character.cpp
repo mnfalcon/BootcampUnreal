@@ -68,6 +68,11 @@ AUnrealBootcamp3Character::AUnrealBootcamp3Character()
 
 	ProjectileCount = 0;
 	isFPCameraActive = false;
+
+	SprintSpeedMultiplier = 1.75;
+
+	PlayerStamina = 100.0;
+
 }
 
 void AUnrealBootcamp3Character::AddToInventory(APickupTest* actor)
@@ -107,6 +112,11 @@ void AUnrealBootcamp3Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (PlayerStamina == 100.0 && !bIsSprinting)
+	{
+		GetWorldTimerManager().ClearTimer(SprintTimer);
+	}
+
 	
 
 }
@@ -145,7 +155,13 @@ void AUnrealBootcamp3Character::SetupPlayerInputComponent(class UInputComponent*
 
 	//Camera test
 	PlayerInputComponent->BindAction("CPPCameraToggle", IE_Pressed, this, &AUnrealBootcamp3Character::CameraSwitch);
+
+	//Sprint
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AUnrealBootcamp3Character::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AUnrealBootcamp3Character::StopSprinting);
+
 }
+
 
 void AUnrealBootcamp3Character::CameraSwitch()
 {
@@ -165,6 +181,7 @@ void AUnrealBootcamp3Character::CameraSwitch()
 		isFPCameraActive = false;
 	}
 }
+
 void AUnrealBootcamp3Character::OnResetVR()
 {
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
@@ -221,7 +238,37 @@ void AUnrealBootcamp3Character::MoveRight(float Value)
 	}
 }
 
+void AUnrealBootcamp3Character::Sprint()
+{
+	bIsSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed *= SprintSpeedMultiplier;
+	GetWorldTimerManager().SetTimer(SprintTimer, this,
+			&AUnrealBootcamp3Character::DepleteStamina, 1.0f, true);
 
+
+}
+
+void AUnrealBootcamp3Character::StopSprinting()
+{
+	GetWorldTimerManager().ClearTimer(SprintTimer);
+	bIsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed /= SprintSpeedMultiplier;
+
+	GetWorldTimerManager().SetTimer(SprintTimer, this,
+			&AUnrealBootcamp3Character::RegenerateStamina, 1.0f, true);
+
+}
+
+
+void AUnrealBootcamp3Character::DepleteStamina()
+{
+	PlayerStamina -= 5;
+}
+
+void AUnrealBootcamp3Character::RegenerateStamina()
+{
+	PlayerStamina += 1;
+}
 void AUnrealBootcamp3Character::Fire()
 {
 

@@ -2,8 +2,7 @@
 
 
 #include "CrosshairTest.h"
-#include <UnrealBootcamp3\UnrealBootcamp3Character.h>
-#include <UnrealBootcamp3\UnrealBootcamp3Character.cpp>
+
 
 void ACrosshairTest::DrawHUD()
 {
