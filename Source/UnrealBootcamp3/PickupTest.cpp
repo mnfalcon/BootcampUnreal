@@ -15,42 +15,22 @@ APickupTest::APickupTest()
 	//this->BoxCollider->bGenerateOverlapEvents;: 1;
 	this->BoxCollider->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 	this->BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &APickupTest::OnOverlapBegin);
-	//this->BoxCollider->AttachToComponent(this->RootComponent,
-		//FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
 }
-void APickupTest::Show(bool visible)
-{
-	/*ECollisionEnabled::Type collision = visible ?
-		ECollisionEnabled::QueryAndPhysics :
-		ECollisionEnabled::NoCollision;
-
-	this->SetActorTickEnabled(visible);
-
-	this->ItemMesh->SetVisibility(visible);
-	this->ItemMesh->SetCollisionEnabled(collision);
-
-	this->BoxCollider->SetCollisionEnabled(collision);*/
-}
-
 
 
 void APickupTest::OnInteract()
 {
 	FString pickup = FString::Printf(TEXT("Picked up: %s"), *Name);
 
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::White, pickup);
+	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Yellow, pickup);
 
 	AUnrealBootcamp3Character* player = Cast<AUnrealBootcamp3Character>
 		(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 	if (player)
 	{
-		Show(false);
 
 		player->AddToInventory(this);
-
-		player->ProjectileCount += 1;
 
 		Destroy();
 	}
@@ -64,7 +44,18 @@ void APickupTest::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp,
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && (OtherActor->ActorHasTag(FName(TEXT("isPlayer")))))
 	{
-		OnInteract();
+		AUnrealBootcamp3Character* player = Cast<AUnrealBootcamp3Character>
+			(UGameplayStatics::GetPlayerCharacter(this, 0));
+		if (player->InventoryLumber < 5)
+		{
+			OnInteract();
+
+			player->InventoryLumber += 1;
+		}
+		else if (player->InventoryLumber == 5)
+		{
+			GEngine->AddOnScreenDebugMessage(1, 5, FColor::Orange, "Inventory is full.");
+		}
 	}
 }
 

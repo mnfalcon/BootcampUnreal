@@ -57,6 +57,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		class AThrowableTest* CurrentItem;
 
+
+
 	bool isFPCameraActive;
 
 protected:
@@ -70,14 +72,14 @@ protected:
 	/** Called for side to side input */
 	void MoveRight(float Value);
 
-	/** 
-	 * Called via input to turn at a given rate. 
+	/**
+	 * Called via input to turn at a given rate.
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void TurnAtRate(float Rate);
 
 	/**
-	 * Called via input to turn look up/down at a given rate. 
+	 * Called via input to turn look up/down at a given rate.
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
@@ -95,8 +97,10 @@ protected:
 	void Sprint();
 	void StopSprinting();
 
+	void Dodge();
+
 private:
-	TArray<APickupTest*> _inventory;
+
 
 public:
 	void AddToInventory(APickupTest* actor);
@@ -130,7 +134,10 @@ public:
 	FORCEINLINE class UCameraComponent* GetTPCamera() const { return FPCamera; }
 
 	UFUNCTION()
-	void Fire();
+		void Fire();
+
+	UFUNCTION()
+		void StartFiring();
 
 	void CameraSwitch();
 
@@ -139,9 +146,22 @@ public:
 
 	UFUNCTION()
 		void RegenerateStamina();
-	
+
+	UFUNCTION()
+		void RegenerateMana();
+
+	UFUNCTION()
+		void SetFiringToFalse();
+
+	UFUNCTION()
+		void FiringTimerFunction();
 
 	FTimerHandle SprintTimer;
+
+	UPROPERTY(VisibleAnywhere)
+		bool bisFiring;
+
+	FTimerHandle FiringTimer;
 
 	//Offset from the camera location to fire projectile
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -157,11 +177,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float PlayerStamina;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float PlayerMana;
+
+	FTimerHandle ManaTimer;
+
 	bool bIsSprinting;
 
 	float sprintRate;
 
+	UPROPERTY(EditAnywhere)
+		TArray<APickupTest*> _inventory;
 
+	UFUNCTION(BlueprintCallable)
+		void ClearInventory();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int InventoryLumber;
+
+
+	
 
 
 

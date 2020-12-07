@@ -75,9 +75,9 @@ void AProjectileTest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FString teststring = FString::Printf(TEXT("Projectile spawned"));
+	//FString teststring = FString::Printf(TEXT("Projectile spawned"));
 
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::White, teststring);
+	//GEngine->AddOnScreenDebugMessage(1, 5, FColor::White, teststring);
 	
 }
 

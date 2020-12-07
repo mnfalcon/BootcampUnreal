@@ -72,6 +72,8 @@ AUnrealBootcamp3Character::AUnrealBootcamp3Character()
 	SprintSpeedMultiplier = 1.75;
 
 	PlayerStamina = 100.0;
+	PlayerMana = 100.0;
+	bisFiring = false;
 
 }
 
@@ -117,6 +119,12 @@ void AUnrealBootcamp3Character::Tick(float DeltaTime)
 		GetWorldTimerManager().ClearTimer(SprintTimer);
 	}
 
+	if (PlayerMana == 100.0)
+	{
+		GetWorldTimerManager().ClearTimer(ManaTimer);
+	}
+
+
 	
 
 }
@@ -151,7 +159,7 @@ void AUnrealBootcamp3Character::SetupPlayerInputComponent(class UInputComponent*
 
 
 	//Fire
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUnrealBootcamp3Character::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUnrealBootcamp3Character::StartFiring);
 
 	//Camera test
 	PlayerInputComponent->BindAction("CPPCameraToggle", IE_Pressed, this, &AUnrealBootcamp3Character::CameraSwitch);
@@ -159,6 +167,9 @@ void AUnrealBootcamp3Character::SetupPlayerInputComponent(class UInputComponent*
 	//Sprint
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AUnrealBootcamp3Character::Sprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AUnrealBootcamp3Character::StopSprinting);
+
+	//Dodge
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AUnrealBootcamp3Character::Dodge);
 
 }
 
@@ -238,13 +249,26 @@ void AUnrealBootcamp3Character::MoveRight(float Value)
 	}
 }
 
+void AUnrealBootcamp3Character::Dodge()
+{
+	if (PlayerStamina >=30)
+	{
+		GetCharacterMovement()->Velocity *= 30;
+		PlayerStamina -= 30;
+		GetWorldTimerManager().SetTimer(SprintTimer, this,
+			&AUnrealBootcamp3Character::RegenerateStamina, 1.0f, true);
+	}
+}
+
 void AUnrealBootcamp3Character::Sprint()
 {
-	bIsSprinting = true;
-	GetCharacterMovement()->MaxWalkSpeed *= SprintSpeedMultiplier;
-	GetWorldTimerManager().SetTimer(SprintTimer, this,
+	if (PlayerStamina >=5)
+	{
+		bIsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed *= SprintSpeedMultiplier;
+		GetWorldTimerManager().SetTimer(SprintTimer, this,
 			&AUnrealBootcamp3Character::DepleteStamina, 1.0f, true);
-
+	}
 
 }
 
@@ -269,13 +293,28 @@ void AUnrealBootcamp3Character::RegenerateStamina()
 {
 	PlayerStamina += 1;
 }
+
+void AUnrealBootcamp3Character::RegenerateMana()
+{
+	PlayerMana += 1;
+}
+
+void AUnrealBootcamp3Character::StartFiring()
+{
+	if (PlayerMana >= 20)
+	{
+		GetWorldTimerManager().SetTimer(FiringTimer, this, &AUnrealBootcamp3Character::Fire, 1.0f, false);
+	}
+}
 void AUnrealBootcamp3Character::Fire()
 {
 
-
-	if (ProjectileCount > 0)
+	if (!bisFiring)
 
 	{
+		PlayerMana -= 20;
+		GetWorldTimerManager().SetTimer(ManaTimer, this, &AUnrealBootcamp3Character::RegenerateMana, 0.5f, true);
+		&AUnrealBootcamp3Character::FiringTimerFunction;
 		if (ProjectileClass)
 		{
 			//Get camera transform
@@ -284,7 +323,7 @@ void AUnrealBootcamp3Character::Fire()
 			GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 			//Set MuzzleOffset tospawn projectiles slightly in front of the camera
-			MuzzleOffset.Set(0.0f, 0.0f, -50.0f);
+			MuzzleOffset.Set(0.0f, -20.0f, -35.0f);
 
 			//Transform MuzzleOffset from camera space to world space
 			FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation)
@@ -311,13 +350,30 @@ void AUnrealBootcamp3Character::Fire()
 					//Set projectile's initial trajectory
 					FVector LaunchDirection = MuzzleRotation.Vector();
 					Projectile->FireInDirection(LaunchDirection);
-					ProjectileCount -= 1;
-					if (_inventory.Num() > 0)
-					{
-						AUnrealBootcamp3Character::_inventory.Pop();
-					}
 				}
+				
 			}
 		}
+		
 	}
+}
+
+//// doesn't work
+void AUnrealBootcamp3Character::SetFiringToFalse()
+{
+	bisFiring = false;
+	GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Orange, TEXT("Setting Firing to False"));
+	GetWorldTimerManager().ClearTimer(FiringTimer);
+}
+//// neither does this
+void AUnrealBootcamp3Character::FiringTimerFunction()
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Orange, TEXT("Calling Timer Function"));
+	bisFiring = true;
+	GetWorldTimerManager().SetTimer(FiringTimer, this, &AUnrealBootcamp3Character::SetFiringToFalse, 1.5f, false);
+}
+
+void AUnrealBootcamp3Character::ClearInventory()
+{
+	AUnrealBootcamp3Character::_inventory.Empty();
 }
