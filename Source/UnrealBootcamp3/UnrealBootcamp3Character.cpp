@@ -124,6 +124,13 @@ void AUnrealBootcamp3Character::Tick(float DeltaTime)
 		GetWorldTimerManager().ClearTimer(ManaTimer);
 	}
 
+	if (PlayerStamina <= 0)
+	{
+		&AUnrealBootcamp3Character::StopSprinting;
+		PlayerStamina = 0;
+		GetCharacterMovement()->MaxWalkSpeed = 600;
+	}
+
 
 	
 
@@ -253,7 +260,7 @@ void AUnrealBootcamp3Character::Dodge()
 {
 	if (PlayerStamina >=30)
 	{
-		GetCharacterMovement()->Velocity *= 30;
+		GetCharacterMovement()->Velocity *= 50;
 		PlayerStamina -= 30;
 		GetWorldTimerManager().SetTimer(SprintTimer, this,
 			&AUnrealBootcamp3Character::RegenerateStamina, 1.0f, true);
@@ -269,6 +276,11 @@ void AUnrealBootcamp3Character::Sprint()
 		GetWorldTimerManager().SetTimer(SprintTimer, this,
 			&AUnrealBootcamp3Character::DepleteStamina, 1.0f, true);
 	}
+	else if (PlayerStamina <= 0)
+	{
+		&AUnrealBootcamp3Character::StopSprinting;
+
+	}
 
 }
 
@@ -276,7 +288,10 @@ void AUnrealBootcamp3Character::StopSprinting()
 {
 	GetWorldTimerManager().ClearTimer(SprintTimer);
 	bIsSprinting = false;
-	GetCharacterMovement()->MaxWalkSpeed /= SprintSpeedMultiplier;
+	if (GetCharacterMovement()->MaxWalkSpeed > 600)
+	{
+		GetCharacterMovement()->MaxWalkSpeed /= SprintSpeedMultiplier;
+	}
 
 	GetWorldTimerManager().SetTimer(SprintTimer, this,
 			&AUnrealBootcamp3Character::RegenerateStamina, 1.0f, true);

@@ -5,6 +5,11 @@ Content/StarterContent
 Content/Keep
 Content/GrassLandscape
 Content/AnimStarterPack
+Content/HLOD
+Content/Imported3DModels/
+Content/Imported3DModels/Sword_Normal.uasset
+Content/Imported3DModels/Sword_OcclusionROughnessMetallic.uasset
+Content/Imported3DModels/Sword_Sheath.uasset
 
 # Visual Studio 2015 user specific files
 .vs/
