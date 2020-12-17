@@ -12,6 +12,10 @@ Things that were done in C++ include:
 Everything else was made using blueprints, a blackboard and a behaviour tree.
 
 #######################################
+Gameplay video: https://youtu.be/tbiaysgNo0g
+
+
+#######################################
 About the assets:
 
 - Some textures were imported, some were made from scratch.
