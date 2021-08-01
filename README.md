@@ -1,7 +1,7 @@
 # BootcampUnreal
 For Globant's Unreal Bootjam
 
-Things that were done in C++ include:
+# Things that were made in C++ include:
 - Player projectiles
 - First/Third person camera switch
 - Mana, stamina and their respective functionalities and regeneration
@@ -12,11 +12,11 @@ Things that were done in C++ include:
 Everything else was made using blueprints, a blackboard and a behaviour tree.
 
 
-#Gameplay video: https://youtu.be/tbiaysgNo0g
+# Gameplay video: https://youtu.be/tbiaysgNo0g
 
 
 
-#About the assets:
+# About the assets:
 
 - Some textures were imported, some were made from scratch.
 - All 3D models were either imported or are part of the Starter Content.
@@ -25,7 +25,7 @@ I'll post the links to where I got each asset from afterwards.
 - The animation for the sword attack, the firing, and death, were made by hand with the UE4 mannequin.
 
 
-#Controls:
+# Controls:
 
 Alt - Dodge
 E - Fire
@@ -35,7 +35,7 @@ Q - Open Pause Menu
 (I will add a widget or something with the controls)
 
 
-#Things I'd like to improve:
+# Things I'd like to improve:
 
 Sword attacks mostly depend on the animation. I couldn't improve this feature yet because it was the last thing I included and spent most of the time fixing other things. But I am aware that the way in which I did it isn't probably the best way to do it, so I'll be working on that.
 
